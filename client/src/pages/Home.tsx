@@ -1,53 +1,98 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, MapPin, Shield, Users, FileCheck } from "lucide-react";
+import { Parallax3D } from "@/components/Parallax3D";
+import { CinematicScroll } from "@/components/CinematicScroll";
+import { ArrowRight, MapPin, Shield, Users, FileCheck, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 
 /**
  * Landing Page - Hanndrey Cascaes
- * Design: Minimalismo Cinematográfico Escuro (Dark Elegance)
- * Paleta: Preto Profundo + Dourado Champagne + Branco Puro
- * Tipografia: Playfair Display (títulos) + Montserrat (subtítulos) + Inter (corpo)
+ * Design: Cinematografia Imersiva com Parallax 3D
+ * Experiência: Câmera virtual entrando no apartamento ao rolar
  */
+
+const cinematicSections = [
+  {
+    id: "exterior",
+    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663362044607/hzpuYcxarCpvpsU3RMPArx/hero_exterior-eyNAve9pMudbXffyMBULoS.webp",
+    title: "Bem-vindo à Ponta Negra",
+    description: "Uma jornada visual pela luxúria e sofisticação em Manaus",
+  },
+  {
+    id: "living",
+    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663362044607/hzpuYcxarCpvpsU3RMPArx/living_room-au3rNu6Wk8HjLyanBBKZq8.webp",
+    title: "Sala de Estar Panorâmica",
+    description: "Vista para o Rio Negro em cada momento",
+  },
+  {
+    id: "kitchen",
+    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663362044607/hzpuYcxarCpvpsU3RMPArx/kitchen-HLQ8mTqgmDx3mhWKjjbtnW.webp",
+    title: "Cozinha Gourmet",
+    description: "Elegância e funcionalidade em cada detalhe",
+  },
+  {
+    id: "suite",
+    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663362044607/hzpuYcxarCpvpsU3RMPArx/master_suite-Q2MVnSaUxLvN9RfZKWLhaQ.webp",
+    title: "Suíte Master",
+    description: "Seu refúgio de luxo e conforto",
+  },
+  {
+    id: "balcony",
+    image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663362044607/hzpuYcxarCpvpsU3RMPArx/balcony_view-cWUwXtTTPs5V5mKjxpB.webp",
+    title: "Varanda Exclusiva",
+    description: "O melhor pôr do sol de Manaus",
+  },
+];
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mouseY, setMouseY] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 100);
     };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setMouseY(e.clientY);
+    };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation */}
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      {/* Fixed Navigation */}
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          isScrolled ? "bg-background/95 backdrop-blur-md border-b border-border" : "bg-transparent"
+        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+          isScrolled ? "bg-background/95 backdrop-blur-md border-b border-border shadow-2xl" : "bg-transparent"
         }`}
       >
         <div className="container flex items-center justify-between py-4 md:py-6">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-              <span className="text-accent-foreground font-bold text-lg">HC</span>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-accent to-accent/80 rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-accent-foreground font-bold text-xl">HC</span>
             </div>
-            <span className="hidden md:block font-heading font-semibold text-lg">Hanndrey Cascaes</span>
+            <div className="hidden md:block">
+              <p className="font-display font-bold text-lg text-foreground">Hanndrey Cascaes</p>
+              <p className="text-xs text-accent">Corretor de Imóveis</p>
+            </div>
           </div>
 
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#sobre" className="text-sm font-medium hover:text-accent transition-colors">
+          <div className="hidden lg:flex items-center gap-8">
+            <a href="#sobre" className="text-sm font-medium hover:text-accent transition-colors duration-300">
               Sobre
             </a>
-            <a href="#imoveis" className="text-sm font-medium hover:text-accent transition-colors">
+            <a href="#imoveis" className="text-sm font-medium hover:text-accent transition-colors duration-300">
               Imóveis
             </a>
-            <a href="#processo" className="text-sm font-medium hover:text-accent transition-colors">
+            <a href="#processo" className="text-sm font-medium hover:text-accent transition-colors duration-300">
               Processo
-            </a>
-            <a href="#contato" className="text-sm font-medium hover:text-accent transition-colors">
-              Contato
             </a>
           </div>
 
@@ -55,141 +100,137 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section with Parallax 3D */}
       <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-secondary opacity-50" />
+        {/* Animated Background */}
+        <div className="absolute inset-0 z-0">
+          <div
+            className="absolute inset-0 opacity-40"
+            style={{
+              backgroundImage: "url('https://d2xsxph8kpxj0f.cloudfront.net/310519663362044607/hzpuYcxarCpvpsU3RMPArx/hero_exterior-eyNAve9pMudbXffyMBULoS.webp')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              transform: `translateY(${mouseY * 0.1}px)`,
+              transition: "transform 0.1s ease-out",
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-background" />
+        </div>
 
-        {/* Background Image with Overlay */}
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage: `url('/manus-storage/mockup_dark_bf81598d.png')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
+        {/* Content */}
+        <Parallax3D intensity={15}>
+          <div className="container relative z-10 space-y-8 text-center">
+            {/* Animated Title */}
+            <div className="space-y-6 animate-fade-in">
+              <div className="inline-block">
+                <p className="text-accent font-heading font-bold text-sm md:text-base tracking-widest uppercase mb-4">
+                  ✨ Experiência Cinematográfica
+                </p>
+              </div>
 
-        <div className="container relative z-10 grid md:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
-          <div className="space-y-8 fade-in">
-            <div className="space-y-4">
-              <p className="text-accent font-heading font-semibold text-sm md:text-base tracking-wider">
-                CORRETOR DE IMÓVEIS | BACHAREL EM DIREITO
-              </p>
-              <h1 className="hero-text text-foreground">
-                O Imóvel Certo Existe. E Eu Sei Onde Encontrá-lo.
+              <h1 className="hero-text text-foreground leading-tight">
+                Bem-vindo ao Seu
+                <br />
+                <span className="bg-gradient-to-r from-accent via-yellow-400 to-accent bg-clip-text text-transparent">
+                  Novo Lar
+                </span>
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-lg">
-                Especialista em transformar o seu sonho em um endereço real em Manaus. Atendimento exclusivo, segurança jurídica e as melhores condições do mercado.
+
+              <p className="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-3xl mx-auto font-light">
+                Uma jornada imersiva pela luxúria, sofisticação e elegância. Descubra como é viver em um dos apartamentos mais exclusivos de Manaus.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button className="btn-primary flex items-center gap-2">
-                Fazer Simulação Gratuita
-                <ArrowRight className="w-4 h-4" />
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
+              <Button className="btn-primary flex items-center gap-2 text-base px-8 py-6 group">
+                Iniciar Visita Virtual
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button className="btn-secondary flex items-center gap-2">
+              <Button className="btn-secondary flex items-center gap-2 text-base px-8 py-6">
                 Falar no WhatsApp
               </Button>
             </div>
 
-            {/* Trust Indicators */}
-            <div className="grid grid-cols-3 gap-4 pt-8 border-t border-border">
-              <div>
-                <p className="text-2xl font-bold text-accent">100+</p>
-                <p className="text-sm text-muted-foreground">Clientes Satisfeitos</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-accent">18</p>
-                <p className="text-sm text-muted-foreground">Imóveis Exclusivos</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-accent">10+</p>
-                <p className="text-sm text-muted-foreground">Anos de Experiência</p>
+            {/* Scroll Indicator */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-xs text-accent font-semibold uppercase tracking-wider">Role para explorar</p>
+                <ChevronDown className="w-6 h-6 text-accent" />
               </div>
             </div>
           </div>
-
-          {/* Right Image */}
-          <div className="hidden md:block relative h-96 lg:h-full">
-            <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-2xl" />
-            <img
-              src="/manus-storage/mockup_light_7b6e3be8.png"
-              alt="Imóvel de Luxo em Manaus"
-              className="w-full h-full object-cover rounded-2xl shadow-2xl"
-            />
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-accent rounded-full flex items-start justify-center p-2">
-            <div className="w-1 h-2 bg-accent rounded-full" />
-          </div>
-        </div>
+        </Parallax3D>
       </section>
+
+      {/* Cinematic Scroll Experience */}
+      <CinematicScroll sections={cinematicSections} />
 
       {/* Divider */}
       <div className="section-divider" />
 
       {/* About Section */}
-      <section id="sobre" className="py-20 md:py-32 bg-secondary/30">
+      <section id="sobre" className="py-20 md:py-32 bg-secondary/50">
         <div className="container">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6 slide-up">
-              <h2 className="text-foreground">Muito Mais Que Negócios, Construímos Relações.</h2>
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            {/* Left Content */}
+            <div className="space-y-8 slide-up">
+              <h2 className="text-foreground">Especialista em Transformar Sonhos em Realidade</h2>
+
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Olá, sou Hanndrey Cascaes. Com formação em Direito e paixão pelo mercado imobiliário, meu objetivo não é apenas vender imóveis, mas garantir que você faça o investimento mais seguro e inteligente da sua vida.
-              </p>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Entendo que por trás de cada contrato existe o sonho de uma família, e é por isso que dedico meu tempo, conhecimento e esforço para encontrar a chave perfeita para você.
+                Com formação em Direito e paixão pelo mercado imobiliário, meu objetivo é garantir que você faça o investimento mais seguro e inteligente da sua vida.
               </p>
 
-              {/* Features */}
-              <div className="space-y-4 pt-4">
-                <div className="flex gap-4 items-start">
-                  <Shield className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
+              <div className="space-y-4">
+                <div className="flex gap-4 items-start group">
+                  <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-accent/40 transition-colors">
+                    <Shield className="w-6 h-6 text-accent" />
+                  </div>
                   <div>
-                    <h3 className="font-heading font-semibold text-foreground">Segurança Jurídica</h3>
-                    <p className="text-sm text-muted-foreground">Em cada etapa do processo</p>
+                    <h3 className="font-heading font-semibold text-foreground text-lg">Segurança Jurídica</h3>
+                    <p className="text-sm text-muted-foreground">Bacharel em Direito com expertise em contratos imobiliários</p>
                   </div>
                 </div>
-                <div className="flex gap-4 items-start">
-                  <Users className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
+
+                <div className="flex gap-4 items-start group">
+                  <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-accent/40 transition-colors">
+                    <Users className="w-6 h-6 text-accent" />
+                  </div>
                   <div>
-                    <h3 className="font-heading font-semibold text-foreground">Atendimento Humanizado</h3>
-                    <p className="text-sm text-muted-foreground">Exclusivo e dedicado</p>
+                    <h3 className="font-heading font-semibold text-foreground text-lg">Atendimento Humanizado</h3>
+                    <p className="text-sm text-muted-foreground">Dedicado exclusivamente ao seu sucesso</p>
                   </div>
                 </div>
-                <div className="flex gap-4 items-start">
-                  <FileCheck className="w-6 h-6 text-accent flex-shrink-0 mt-1" />
+
+                <div className="flex gap-4 items-start group">
+                  <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-accent/40 transition-colors">
+                    <FileCheck className="w-6 h-6 text-accent" />
+                  </div>
                   <div>
-                    <h3 className="font-heading font-semibold text-foreground">Especialista em Financiamento</h3>
-                    <p className="text-sm text-muted-foreground">Análise de crédito e aprovação</p>
+                    <h3 className="font-heading font-semibold text-foreground text-lg">Especialista em Financiamento</h3>
+                    <p className="text-sm text-muted-foreground">Análise de crédito e aprovação garantida</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Stats */}
+            {/* Stats Grid */}
             <div className="grid grid-cols-2 gap-6">
-              <div className="bg-card p-8 rounded-xl border border-border hover:border-accent transition-colors">
-                <p className="text-4xl font-bold text-accent mb-2">100+</p>
-                <p className="text-muted-foreground">Clientes Satisfeitos</p>
-              </div>
-              <div className="bg-card p-8 rounded-xl border border-border hover:border-accent transition-colors">
-                <p className="text-4xl font-bold text-accent mb-2">R$50M+</p>
-                <p className="text-muted-foreground">Negociados</p>
-              </div>
-              <div className="bg-card p-8 rounded-xl border border-border hover:border-accent transition-colors">
-                <p className="text-4xl font-bold text-accent mb-2">18</p>
-                <p className="text-muted-foreground">Empreendimentos</p>
-              </div>
-              <div className="bg-card p-8 rounded-xl border border-border hover:border-accent transition-colors">
-                <p className="text-4xl font-bold text-accent mb-2">10+</p>
-                <p className="text-muted-foreground">Anos de Experiência</p>
-              </div>
+              {[
+                { number: "100+", label: "Clientes Satisfeitos", icon: "👥" },
+                { number: "R$50M+", label: "Negociados", icon: "💰" },
+                { number: "18", label: "Empreendimentos", icon: "🏢" },
+                { number: "10+", label: "Anos de Experiência", icon: "⭐" },
+              ].map((stat, i) => (
+                <div
+                  key={i}
+                  className="bg-card p-8 rounded-xl border border-border hover:border-accent hover:shadow-xl transition-all duration-300 group cursor-pointer"
+                >
+                  <p className="text-4xl mb-2 group-hover:scale-125 transition-transform">{stat.icon}</p>
+                  <p className="text-3xl font-bold text-accent mb-2">{stat.number}</p>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -202,63 +243,57 @@ export default function Home() {
       <section id="imoveis" className="py-20 md:py-32">
         <div className="container">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-foreground">Oportunidades Exclusivas em Manaus</h2>
+            <h2 className="text-foreground">Oportunidades Exclusivas</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Seleção cuidadosa de imóveis de alto padrão com as melhores condições de financiamento
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {/* Card 1 */}
-            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-accent transition-all duration-300 hover:shadow-xl">
-              <div className="h-64 bg-gradient-to-br from-accent/20 to-secondary relative overflow-hidden">
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
-                <MapPin className="absolute top-4 right-4 w-6 h-6 text-accent" />
-              </div>
-              <div className="p-8 space-y-4">
-                <h3 className="text-2xl font-heading font-semibold text-foreground">Ponta Negra</h3>
-                <p className="text-muted-foreground">Vista para o rio, 2 e 3 quartos com varanda gourmet.</p>
-                <div className="space-y-2 text-sm">
-                  <p className="text-accent font-semibold">Renda a partir de R$18 mil</p>
-                  <p className="text-muted-foreground">Entrada facilitada | Financiamento até 90%</p>
+            {[
+              {
+                title: "Ponta Negra",
+                desc: "Vista para o rio, 2 e 3 quartos com varanda gourmet",
+                price: "R$18 mil+",
+                features: ["Vista Panorâmica", "Varanda Gourmet", "Financiamento até 90%"],
+              },
+              {
+                title: "Aleixo (Zenith)",
+                desc: "Apartamentos modernos com +10 áreas de lazer",
+                price: "Localização Premium",
+                features: ["Av. André Araújo", "10+ Áreas de Lazer", "Conforto Total"],
+              },
+              {
+                title: "Coroado",
+                desc: "Seu apartamento próprio em 2026 com FGTS",
+                price: "R$10 mil+",
+                features: ["Entrada R$5 mil", "Parcelas R$1.500", "Use seu FGTS"],
+              },
+            ].map((prop, i) => (
+              <div
+                key={i}
+                className="group bg-card rounded-xl overflow-hidden border border-border hover:border-accent transition-all duration-300 hover:shadow-2xl hover:-translate-y-2"
+              >
+                <div className="h-64 bg-gradient-to-br from-accent/30 to-secondary relative overflow-hidden">
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+                  <MapPin className="absolute top-4 right-4 w-8 h-8 text-accent group-hover:scale-125 transition-transform" />
                 </div>
-                <Button className="btn-secondary w-full">Ver Detalhes</Button>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-accent transition-all duration-300 hover:shadow-xl">
-              <div className="h-64 bg-gradient-to-br from-accent/20 to-secondary relative overflow-hidden">
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
-                <MapPin className="absolute top-4 right-4 w-6 h-6 text-accent" />
-              </div>
-              <div className="p-8 space-y-4">
-                <h3 className="text-2xl font-heading font-semibold text-foreground">Aleixo (Zenith)</h3>
-                <p className="text-muted-foreground">Apartamentos modernos com +10 áreas de lazer.</p>
-                <div className="space-y-2 text-sm">
-                  <p className="text-accent font-semibold">Localização Premium</p>
-                  <p className="text-muted-foreground">Av. André Araújo | Conforto e qualidade</p>
+                <div className="p-8 space-y-4">
+                  <h3 className="text-2xl font-heading font-bold text-foreground">{prop.title}</h3>
+                  <p className="text-muted-foreground">{prop.desc}</p>
+                  <p className="text-accent font-bold text-lg">Renda mínima {prop.price}</p>
+                  <div className="space-y-2">
+                    {prop.features.map((f, j) => (
+                      <p key={j} className="text-sm text-muted-foreground flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 bg-accent rounded-full" />
+                        {f}
+                      </p>
+                    ))}
+                  </div>
+                  <Button className="btn-secondary w-full mt-4">Ver Detalhes</Button>
                 </div>
-                <Button className="btn-secondary w-full">Ver Detalhes</Button>
               </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-accent transition-all duration-300 hover:shadow-xl">
-              <div className="h-64 bg-gradient-to-br from-accent/20 to-secondary relative overflow-hidden">
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
-                <MapPin className="absolute top-4 right-4 w-6 h-6 text-accent" />
-              </div>
-              <div className="p-8 space-y-4">
-                <h3 className="text-2xl font-heading font-semibold text-foreground">Coroado</h3>
-                <p className="text-muted-foreground">Seu apartamento próprio em 2026 com FGTS.</p>
-                <div className="space-y-2 text-sm">
-                  <p className="text-accent font-semibold">Renda a partir de R$10 mil</p>
-                  <p className="text-muted-foreground">Parcelas a partir de R$1.500</p>
-                </div>
-                <Button className="btn-secondary w-full">Ver Detalhes</Button>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -267,7 +302,7 @@ export default function Home() {
       <div className="section-divider" />
 
       {/* Process Section */}
-      <section id="processo" className="py-20 md:py-32 bg-secondary/30">
+      <section id="processo" className="py-20 md:py-32 bg-secondary/50">
         <div className="container">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-foreground">O Caminho Para o Seu Novo Lar</h2>
@@ -276,37 +311,22 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-4 gap-6">
             {[
-              {
-                icon: "📝",
-                title: "Análise de Crédito",
-                description: "Entendemos seu perfil e capacidade de investimento",
-              },
-              {
-                icon: "🔍",
-                title: "Seleção Exclusiva",
-                description: "Apresentamos as melhores opções para seu sonho",
-              },
-              {
-                icon: "🏦",
-                title: "Aprovação",
-                description: "Cuidamos de toda a burocracia com segurança",
-              },
-              {
-                icon: "🔑",
-                title: "Entrega das Chaves",
-                description: "Momento de celebrar sua nova conquista",
-              },
-            ].map((step, index) => (
-              <div key={index} className="relative">
-                <div className="bg-card p-8 rounded-xl border border-border text-center space-y-4 hover:border-accent transition-colors">
-                  <div className="text-5xl">{step.icon}</div>
-                  <h3 className="font-heading font-semibold text-foreground text-lg">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground">{step.description}</p>
+              { step: "01", icon: "📝", title: "Análise de Crédito", desc: "Entendemos seu perfil" },
+              { step: "02", icon: "🔍", title: "Seleção Exclusiva", desc: "Melhores opções" },
+              { step: "03", icon: "🏦", title: "Aprovação", desc: "Burocracia resolvida" },
+              { step: "04", icon: "🔑", title: "Entrega das Chaves", desc: "Sua nova vida" },
+            ].map((item, i) => (
+              <div key={i} className="relative">
+                <div className="bg-card p-8 rounded-xl border border-border hover:border-accent transition-all duration-300 text-center space-y-4 group hover:shadow-xl">
+                  <div className="text-5xl group-hover:scale-125 transition-transform">{item.icon}</div>
+                  <p className="text-accent font-bold text-sm">PASSO {item.step}</p>
+                  <h3 className="font-heading font-bold text-foreground text-lg">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.desc}</p>
                 </div>
-                {index < 3 && (
-                  <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
+                {i < 3 && (
+                  <div className="hidden md:block absolute top-1/2 -right-3 transform -translate-y-1/2">
                     <ArrowRight className="w-6 h-6 text-accent/50" />
                   </div>
                 )}
@@ -319,47 +339,54 @@ export default function Home() {
       {/* Divider */}
       <div className="section-divider" />
 
-      {/* CTA Section */}
-      <section id="contato" className="py-20 md:py-32">
+      {/* Final CTA */}
+      <section className="py-20 md:py-32">
         <div className="container">
-          <div className="bg-gradient-to-br from-card to-secondary rounded-2xl p-12 md:p-16 text-center space-y-8 border border-border">
-            <h2 className="text-foreground">Pronto Para Dar o Próximo Passo?</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Chega de adiar o seu sonho. Fale comigo agora e descubra como é fácil conquistar o seu imóvel próprio.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button className="btn-primary text-base px-10 py-4">
-                Falar com Hanndrey no WhatsApp
-              </Button>
-              <Button className="btn-secondary text-base px-10 py-4">
-                Agendar Consulta
-              </Button>
+          <div className="bg-gradient-to-br from-card to-secondary rounded-2xl p-12 md:p-20 text-center space-y-8 border border-border overflow-hidden relative">
+            {/* Animated Background */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0 bg-gradient-to-r from-accent via-transparent to-accent animate-pulse" />
             </div>
 
-            <p className="text-sm text-muted-foreground pt-4">
-              Resposta rápida | Atendimento 24/7 | Sem compromisso
-            </p>
+            <div className="relative z-10 space-y-8">
+              <h2 className="text-foreground">Pronto Para Dar o Próximo Passo?</h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Chega de adiar o seu sonho. Fale comigo agora e descubra como é fácil conquistar o seu imóvel próprio em Manaus.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                <Button className="btn-primary text-base px-10 py-4">
+                  Falar no WhatsApp Agora
+                </Button>
+                <Button className="btn-secondary text-base px-10 py-4">
+                  Agendar Consulta Exclusiva
+                </Button>
+              </div>
+
+              <p className="text-sm text-muted-foreground">
+                ⚡ Resposta em minutos | 24/7 | Sem compromisso
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-secondary/50 border-t border-border py-12">
+      <footer className="bg-secondary/80 border-t border-border py-12">
         <div className="container">
           <div className="grid md:grid-cols-4 gap-8 mb-12">
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
                   <span className="text-accent-foreground font-bold">HC</span>
                 </div>
-                <span className="font-heading font-semibold">Hanndrey Cascaes</span>
+                <span className="font-heading font-bold">Hanndrey Cascaes</span>
               </div>
               <p className="text-sm text-muted-foreground">Corretor de Imóveis em Manaus</p>
             </div>
 
             <div className="space-y-4">
-              <h4 className="font-heading font-semibold text-foreground">Links</h4>
+              <h4 className="font-heading font-bold text-foreground">Links</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a href="#sobre" className="hover:text-accent transition-colors">
@@ -380,7 +407,7 @@ export default function Home() {
             </div>
 
             <div className="space-y-4">
-              <h4 className="font-heading font-semibold text-foreground">Contato</h4>
+              <h4 className="font-heading font-bold text-foreground">Contato</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a href="https://wa.me/5592" className="hover:text-accent transition-colors">
@@ -396,7 +423,7 @@ export default function Home() {
             </div>
 
             <div className="space-y-4">
-              <h4 className="font-heading font-semibold text-foreground">Legal</h4>
+              <h4 className="font-heading font-bold text-foreground">Legal</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <a href="#" className="hover:text-accent transition-colors">
@@ -414,7 +441,7 @@ export default function Home() {
 
           <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
             <p>© 2026 Hanndrey Cascaes - Corretor de Imóveis. Todos os direitos reservados.</p>
-            <p className="mt-2">CRECI: [Inserir CRECI] | Bacharel em Direito</p>
+            <p className="mt-2">CRECI: [Inserir CRECI] | Bacharel em Direito | Manaus - Amazonas</p>
           </div>
         </div>
       </footer>
